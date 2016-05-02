@@ -14,13 +14,13 @@
 
 2. Use `getMostFrequence_Content.py` to get most frequency word lists. Use review file that get from `read_csv.py`. Specify number of reviews here. Ex. > 500 reviews.
 
-3. Use `getSimilar_Content.py` to get similar item matrix. Use output file from `getMostFrequence_Content.py`
+3. Use `SimilarityMatrixContentBased.py` to get similar item matrix. Use output file from `getMostFrequence_Content.py`
 
 ##How to run (collaborative filtering)
 
 1. Use `read_csv.py` to get review (for reviewerID, review text, asin, rating). Specify number of data here. Ex. 500k reviews (same as above but we dont need reviewText fro colaborative filtering)
 
-2. Use `getSimilar_CF.py` to get similar matrix. Use review file from `read_csv.py`. Specify number of reviews here. Ex. > 500 reviews.
+2. Use `ItemToItemCollaborativeFiltering.py` to get similar matrix. Use review file from `read_csv.py`. Specify number of reviews here. Ex. > 500 reviews.
 
 ##Testing
 
