@@ -5,35 +5,84 @@
 
 import gzip
 import csv
+from random import randint
 
-def parsecsv(path):
-    outputFile = open("..//Database//Meta_price.csv", 'wb')  # save file name
-    unusedKey = ['title', 'imUrl', 'related', 'salesRank', 'brand', 'categories', 'description']  # for meta file
-    #outputFile = open("..\\Database\\Movies_and_TV_data_500k_Content.csv", 'wb')#For Content Based Filtering
-    #outputFile = open("..\\Database\\Movies_and_TV_data_500k_Collaborative.csv", 'wb') # For Collaborative Filtering
-    #unusedKey = ['reviewerID', 'helpful', 'reviewerName', 'summary', 'unixReviewTime']  # for Content Based Filtering
-    #unusedKey = ['reviewTime', 'helpful', 'reviewerName', 'summary', 'unixReviewTime', 'reviewText'] #for Collaborative Filtering
-    dataFile = gzip.open(path, 'r')
+#read file from json.gz to csv and delete unused key 
+
+#path file and number of data ex. 500k    
+def parsecsvContent(path1, path2, path3, num):
+    f = open(path1, 'wb') #content.csv file name
+    a = open(path2, 'wb') #cf.csv filename
+    b = open(path3, 'wb') #testing filename
+    unusedKey = ['helpful', 'reviewerName', 'summary', 'unixReviewTime', 'reviewTime'] #for content based
+    g = gzip.open("reviews_Movies_and_TV.json.gz", 'r') 
     count = 1
-    for row in dataFile:
-        data = eval(row)
+    for l in g:
+        data = eval(l)
+        #delete unusedkey
         for key in unusedKey:
             if key in data:
-                del data[key]
+                del data[key]        
+        #set header
         if count == 1:
-            w = csv.DictWriter(outputFile, data.keys())
+            w = csv.DictWriter(f, data.keys()) #content
             w.writeheader()
-            count += 1
-        w.writerow(data)
+            if('reviewText' in data):
+                    del data['reviewText']
+            u = csv.DictWriter(a, data.keys()) #cf
+            u.writeheader()
+            v = csv.DictWriter(b, data.keys()) #testing
+            v.writeheader()
+        #chunk size (approx. 15% of data)
         count += 1
-        # chunk size (approx. 80% of data)
-        count += 1
-        if count == 450000:
+        if count == num:
             break
-        # write data
-        w.writerow(data)
-    outputFile.close()
-    print "Total no of records: " + str(count)
+        #write data
+        if count <= num:
+            if(randint(0,9) < 2): #select 20%
+                if('reviewText' in data):
+                    del data['reviewText']
+                v.writerow(data)
+            else:
+                w.writerow(data) # write to content.csv
+                if('reviewText' in data):
+                    del data['reviewText']
+                u.writerow(data)
+        
+    f.close()
+    a.close()
+    b.close()
+    return 0     
+ 
+    
+def parsecsvMeta(path):
+    f = open(path, 'wb') #training set file name
 
-#parsecsv("..\\Database\\reviews_Movies_and_TV.json.gz")
-parsecsv("..\\Database\\meta_Movies_and_TV.json.gz")
+    unusedMeta = ['title', 'imUrl', 'related', 'salesRank', 'brand', 'categories', 'description'] #for meta file
+
+    g = gzip.open('meta_Movies_and_TV.json.gz', 'r') 
+    count = 1
+    for l in g:
+        data = eval(l)
+        #delete unusedkey
+        for key in unusedMeta: 
+            if key in data:
+                del data[key]        
+        #set header
+        if count == 1:
+            w = csv.DictWriter(f, data.keys())
+            w.writeheader()
+        #chunk size (approx. 15% of data)
+        count += 1
+
+        w.writerow(data)
+       
+    f.close()
+    return 0       
+
+numData = 600000
+
+
+parsecsvContent("Content500k.csv", "CF500k.csv", "Testing.csv", numData)
+
+parsecsvMeta("MetaData.csv")
