@@ -1,6 +1,7 @@
 """
     Data set which we are using contains many field which are not required for Recommendation Algorithm.
-    This code helps to retrieve 80% of data with required fields for both Content Based and Collaborative Filtering.
+    This code helps to retrieve 80% as training data and 20% of testing data with required fields for both Content Based 
+    and Collaborative Filtering.
 """
 
 import gzip
@@ -33,7 +34,7 @@ def parsecsvContent(path1, path2, path3, num):
             u.writeheader()
             v = csv.DictWriter(b, data.keys()) #testing
             v.writeheader()
-        #chunk size (approx. 15% of data)
+
         count += 1
         if count == num:
             break
@@ -72,7 +73,7 @@ def parsecsvMeta(path):
         if count == 1:
             w = csv.DictWriter(f, data.keys())
             w.writeheader()
-        #chunk size (approx. 15% of data)
+
         count += 1
 
         w.writerow(data)
@@ -80,8 +81,8 @@ def parsecsvMeta(path):
     f.close()
     return 0       
 
-numData = 600000
 
+numData = 600000 #total data used in project
 
 parsecsvContent("Content500k.csv", "CF500k.csv", "Testing.csv", numData)
 
